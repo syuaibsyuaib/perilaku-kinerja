@@ -268,14 +268,6 @@ table = $('#tableSKPBawahan').DataTable({
 });
 
 
-
-
-
-
-
-
-
-
 //===================================================================================//
 
 fetch("https://kinerjav2.pareparekota.go.id/c_atasan_2022/skp_bawahan")
@@ -423,7 +415,7 @@ arr.push(arrIdUser)
 nip["NIP"] = (/\d+/).exec($(".info").html())[0]
 arr.push(nip)
 
-console.log(arr)
+// console.log(Object.entries(arr[0]))
 let urlScript = "https://script.google.com/macros/s/AKfycbw4laf_ELwwqh4tBeaXa2VUmRnUfJyPpilC42QymSxx3NCt4rLS2zA6aacW9OwpZFbF/exec"
 fetch(urlScript, {
   method: 'post',
@@ -447,59 +439,70 @@ function ambil() {
     })
     .then(resp => {
       //ambil html bootstrap perilaku
-      let urlPerilaku = `https://kinerjav2.pareparekota.go.id/c_atasan_2022/penilaian_perilaku/${Object.entries(arr[0])[1][0]}/1`
       arrDeskripsiPenilaian = resp
       //dari google sheet
       console.log(arrDeskripsiPenilaian)
 
-      fetch(urlPerilaku)
-        .then(res => {
-          return res.text()
-        })
-        .then(resphtml => {
-          //ambil id perilaku dari html
-          let arrIdJenisdanPenilaian = {}
-          let arrIdPenilaian = resphtml.match(/\d+(?=,)/g)
-          let arrIdJenisPenilaian = resphtml.match(/,\d+/g)
-          for (let m = 0; m < arrIdJenisPenilaian.length; m++) {
-            arrIdJenisdanPenilaian[arrIdPenilaian[m]] = (arrIdJenisPenilaian[m]).substring(1)
-          }
 
-          console.log(arrIdJenisdanPenilaian)
+      for (let p = 0; p < arrDeskripsiPenilaian.length; p++) {
+        let urlPerilaku = `https://kinerjav2.pareparekota.go.id/c_atasan_2022/penilaian_perilaku/${Object.entries(arr[0])[p][0]}/1`
+        // let urlPerilaku = `https://kinerjav2.pareparekota.go.id/c_atasan_2022/penilaian_perilaku/${arrDeskripsiPenilaian[1][p]}/1`
 
-          //kirim penilaian yang diambil dari google sheet ke url perilaku
-          let urlPenilaian = "https://kinerjav2.pareparekota.go.id/c_atasan_2022/proses_input_penilaian"
-
-          let formPenilaian = new FormData()
-
-          for (let l = 0; l < arrDeskripsiPenilaian.length; l++) {
-            if (arrDeskripsiPenilaian[l][0] == Object.entries(arr[0])[1][0]) {
-              console.log(arrDeskripsiPenilaian[l][1])
-              console.log(Object.entries(arrIdJenisdanPenilaian))
-
+        fetch(urlPerilaku)
+          .then(res => {
+            return res.text()
+          })
+          .then(resphtml => {
+            //ambil id perilaku dari html
+            let objIdJenisdanPenilaian = {}
+            let arrIdPenilaian = resphtml.match(/\(\d+(?=,)/g)
+            let arrIdJenisPenilaian = resphtml.match(/,\d+/g)
+            for (let m = 0; m < arrIdJenisPenilaian.length; m++) {
+              objIdJenisdanPenilaian[(arrIdPenilaian[m]).substring(1)] = (arrIdJenisPenilaian[m]).substring(1)
             }
-          }
 
-          formPenilaian.append("id", arrIdPenilaian[j])
-          formPenilaian.append("penilaian", arrDeskripsiPenilaian[k])
+            // console.log(objIdJenisdanPenilaian)
+            let arrIdJenisdanPenilaian = Object.entries(objIdJenisdanPenilaian)
+            //kirim penilaian yang diambil dari google sheet ke url perilaku
+            let urlPenilaian = "https://kinerjav2.pareparekota.go.id/c_atasan_2022/proses_input_penilaian"
 
-          // fetch(urlPenilaian, {
-          //   method: "post",
-          //   body: formPenilaian
-          // })
-          //   .then(hasil => {
-          //     return hasil.text()
-          //   })
-          //   .then(hasil2 => {
-          //     console.log(hasil2)
-          //   })
-          //   .catch(err => {
-          //     console.log(err)
-          //   })
-        })
-        .catch(err => {
-          console.log(err)
-        })
+            let formPenilaian = new FormData()
+            // let arrId = []
+
+            for (let l = 0; l < arrDeskripsiPenilaian.length; l++) { //ulangi sebanyak user
+              if (arrDeskripsiPenilaian[l][0] == Object.entries(arr[0])[p][0]) { //jika iduser g.sheet == iduser html
+                for (let n = 1; n < arrDeskripsiPenilaian[l].length; n++) {
+                  for (let v = 0; v < arrIdJenisdanPenilaian.length; v++) {
+                    if (arrDeskripsiPenilaian[l][n][1] == arrIdJenisdanPenilaian[v][1] * 1) {
+                      // console.log(arrIdJenisdanPenilaian[v])
+                      // console.log(arrDeskripsiPenilaian[l][n])
+                      formPenilaian.append("id", arrIdJenisdanPenilaian[v][0])
+                      formPenilaian.append("penilaian", arrDeskripsiPenilaian[l][n][0])
+
+                      fetch(urlPenilaian, {
+                        method: "post",
+                        body: formPenilaian
+                      })
+                        .then(hasil => {
+                          return hasil.text()
+                        })
+                        .then(hasil2 => {
+                          console.log(hasil2)
+                        })
+                        .catch(err => {
+                          console.log(err)
+                        })
+                    }
+                  }
+                };
+              }
+            }
+            // console.log(arrId)
+          })
+          .catch(err => {
+            console.log(err)
+          })
+      }
     })
     .catch(err => {
       console.log(err)
