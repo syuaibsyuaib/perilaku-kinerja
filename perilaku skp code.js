@@ -56,37 +56,38 @@ function tampilkanSemua(thn) {
 //==== END ====
 
 //============ isi SEMUA perilaku target RENCANA kinerja ========
-
-let arr2 = [] //tampung ID user
-$('#tableSKPBawahan a:odd').each((e, n) => {
-  arr2[e] = (/\d+/).exec($(n).prop('onclick'))[0]
-  $(n).parent().append(arr2[e])
-
-  let formData = new FormData();
-
-  formData.append("id_opmt_tahunan_skp", arr2[e]);
-  formData.append("id_perilaku", e + 1);
-  formData.append("ekspektasi", "Sesuai ekspektasi Pimpinan");
-
-  $.ajax({
-    url: "https://kinerjav2.pareparekota.go.id/c_atasan_2022/proses_update_ekspetasi",
-    type: "POST",
-    data: formData,
-    contentType: false,
-    cache: false,
-    processData: false,
-    success: function (data) {
-      var res = JSON.parse(data);
-      console.log(res.message)
-      if (res.code == 1) {
-        target_skp_bawahan(arr2[e]);
+function isiSemuaPerilakuRencana(deskripsi){
+  let arr2 = [] //tampung ID user
+  $('#tableSKPBawahan a:odd').each((e, n) => {
+    arr2[e] = (/\d+/).exec($(n).prop('onclick'))[0]
+    $(n).parent().append(arr2[e])
+  
+    let formData = new FormData();
+  
+    formData.append("id_opmt_tahunan_skp", arr2[e]);
+    formData.append("id_perilaku", e + 1);
+    formData.append("ekspektasi", deskripsi);
+  
+    $.ajax({
+      url: "https://kinerjav2.pareparekota.go.id/c_atasan_2022/proses_update_ekspetasi",
+      type: "POST",
+      data: formData,
+      contentType: false,
+      cache: false,
+      processData: false,
+      success: function (data) {
+        var res = JSON.parse(data);
+        console.log(res.message)
+        if (res.code == 1) {
+          target_skp_bawahan(arr2[e]);
+        }
+      },
+      error: function (err) {
+        console.log(err.toString());
       }
-    },
-    error: function (err) {
-      console.log(err.toString());
-    }
-  });
-})
+    });
+  })
+}
 //==== END ====
 
 //========= isi perilaku target RENCANA kinerja =========
@@ -154,56 +155,38 @@ $('#tableSKPBawahan a:odd').each((e, n) => {
 })
 //==== END ====
 
-//===== isi umpan balik kinerja =====
-let urlUmpanBalik = "https://kinerjav2.pareparekota.go.id/c_atasan_2022/proses_update_umpan_balik"
+//===== isi umpan balik HASIL kinerja =====
+function isiUmpanBalik(idUser, idUmpan, deskripsi) {
+  let formUmpanBalik = new FormData();
 
-let formUmpanBalik = new FormData();
+  formUmpanBalik.append("id_opmt_kinerja_utama_detail", id)
+  formUmpanBalik.append("umpan_balik", deskripsi)
 
-formUmpanBalik.append("id_opmt_kinerja_utama_detail", 5421)
-formUmpanBalik.append("umpan_balik", "")
+  $.ajax({
+    //alert("masuk3");
+    url: "https://kinerjav2.pareparekota.go.id/c_atasan_2022/proses_update_umpan_balik", // Url to which the request is send
+    type: "POST", // Type of request to be send, called as method
+    data: formUmpanBalik, // Data sent to server, a set of key/value pairs (i.e. form fields and values)
+    contentType: false, // The content type used when sending data to the server.
+    cache: false, // To unable request pages to be cached
+    processData: false, // To send DOMDocument or non processed data file it is set to false
+    success: function (data) {
+      var res = JSON.parse(data);
+      console.log(res.message);
+      if (res.code == 1) {
+        realisasi_skp_bawahan(idUser);
+      }
 
+    },
+    error: function (hasil) {
+      console.log(hasil.toString());
+    }
+  });
+}
 
 
 //===============================
 //--PERILAKU
-//--------------https://kinerjav2.pareparekota.go.id/c_atasan_2022/proses_input_penilaian
-
-// let formPerilaku
-
-// $("#ajxContent a:odd").each((n, el) => {
-//   let isi = /\d+/.exec($(el).attr("onclick"))
-//   console.log(isi[0])
-
-//   formPerilaku = null
-//   formPerilaku = new FormData();
-
-//   formPerilaku.append("id", isi[0]);
-//   formPerilaku.append("penilaian", penilaian);
-
-//   $.ajax({
-//     url: "https://kinerjav2.pareparekota.go.id/c_atasan_2022/proses_input_penilaian", // Url to which the request is send
-//     type: "POST", // Type of request to be send, called as method
-//     data: formPerilaku, // Data sent to server, a set of key/value pairs (i.e. form fields and values)
-//     contentType: false, // The content type used when sending data to the server.
-//     cache: false, // To unable request pages to be cached
-//     processData: false, // To send DOMDocument or non processed data file it is set to false
-//     success: function (data) {
-//       var res = JSON.parse(data);
-//       console.log(res.message);
-//       $('.close').click();
-//       if (res.code == 1) {
-//         nilai(isi[0], 1)
-//       }
-//     },
-//     error: function (err) {
-//       console.log(err.toString());
-//     }
-//   })
-// })
-
-//==========================================
-
-// $('body').append(`<script src=""></script>`)
 
 $('.navbar-static-top').append(`<button class="navbar-custom-menu btn btn-danger" style="height:50px;width:165px" onclick="ambil(this)">IMPORT PERILAKU</button>`)
 
@@ -315,3 +298,4 @@ function ambil() {
       console.log(err)
     })
 }
+//==== END ====
