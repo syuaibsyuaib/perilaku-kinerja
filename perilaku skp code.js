@@ -6,6 +6,7 @@
 // Content-Type = application/x-www-form-urlencoded
 // Body = draw=1&columns%5B0%5D%5Bdata%5D=0&columns%5B0%5D%5Bname%5D=&columns%5B0%5D%5Bsearchable%5D=true&columns%5B0%5D%5Borderable%5D=false&columns%5B0%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B0%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B1%5D%5Bdata%5D=1&columns%5B1%5D%5Bname%5D=&columns%5B1%5D%5Bsearchable%5D=true&columns%5B1%5D%5Borderable%5D=true&columns%5B1%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B1%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B2%5D%5Bdata%5D=2&columns%5B2%5D%5Bname%5D=&columns%5B2%5D%5Bsearchable%5D=true&columns%5B2%5D%5Borderable%5D=false&columns%5B2%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B2%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B3%5D%5Bdata%5D=3&columns%5B3%5D%5Bname%5D=&columns%5B3%5D%5Bsearchable%5D=true&columns%5B3%5D%5Borderable%5D=false&columns%5B3%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B3%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B4%5D%5Bdata%5D=4&columns%5B4%5D%5Bname%5D=&columns%5B4%5D%5Bsearchable%5D=true&columns%5B4%5D%5Borderable%5D=false&columns%5B4%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B4%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B5%5D%5Bdata%5D=5&columns%5B5%5D%5Bname%5D=&columns%5B5%5D%5Bsearchable%5D=true&columns%5B5%5D%5Borderable%5D=false&columns%5B5%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B5%5D%5Bsearch%5D%5Bregex%5D=false&columns%5B6%5D%5Bdata%5D=6&columns%5B6%5D%5Bname%5D=&columns%5B6%5D%5Bsearchable%5D=true&columns%5B6%5D%5Borderable%5D=false&columns%5B6%5D%5Bsearch%5D%5Bvalue%5D=&columns%5B6%5D%5Bsearch%5D%5Bregex%5D=false&start=0&length=10&search%5Bvalue%5D=&search%5Bregex%5D=false&tahun=2022
 
+// ambil semua data user dalam bentuk array
 fetch("https://kinerjav2.pareparekota.go.id/c_atasan_2022/skp_bawahan")
   .then(res => {
     return res.text()
@@ -103,92 +104,10 @@ fetch("https://kinerjav2.pareparekota.go.id/C_atasan_2022/dt_bawahan", {
     // $('#tengah').html(resp.data);
   })
 
+//==== END ====
 
 
-
-
-// // STEP 2
-// URL = https://kinerjav2.pareparekota.go.id/c_atasan_2022/proses_update_ekspetasi
-// content-type = multipart/form-data; boundary=----WebKitFormBoundaryTHqpHJGYplp9zfBX
-// Body = id_opmt_tahunan_skp: 16289, id_perilaku: 1, ekspektasi: Sesuai ekspektasi Pimpinan
-// =============================
-
-var table
-table = $('#tableSKPBawahan').DataTable({
-  "searching": true,
-  "processing": true, //Feature control the processing indicator.
-  "serverSide": true, //Feature control DataTables' server-side processing mode.
-  "order": [], //Initial no order.
-
-  // Load data for the table's content from an Ajax source
-  "ajax": {
-    "url": "https://kinerjav2.pareparekota.go.id/C_atasan_2022/dt_bawahan",
-    "type": "POST",
-    "data": function (d) {
-      d.tahun = 2022;
-    }
-  },
-  scrollY: 270,
-  "scrollX": true,
-  //Set column definition initialisation properties.
-  "columnDefs": [{
-    "width": "3%",
-    className: "dt-center",
-    "targets": [0], //first column / numbering column
-    "orderable": false, //set not orderable
-  }, {
-    className: "dt-center",
-    "width": "10%",
-    "targets": [1],
-    "createdCell": function (td, cellData, rowData, row, col) {
-      $(td).css('text-align', 'left');
-    }
-  }, {
-    "width": "10%",
-    className: "dt-center",
-    "orderable": false,
-    "targets": [2]
-  }, {
-    "width": "25%",
-    className: "dt-center",
-    "orderable": false,
-    "targets": [3]
-  }, {
-    "width": "10%",
-    className: "dt-center",
-    "orderable": false,
-    "targets": [4]
-  }, {
-    "width": "10%",
-    className: "dt-center",
-    "orderable": false,
-    "targets": [5]
-  }, {
-    "width": "5%",
-    className: "dt-center",
-    "orderable": false,
-    "targets": [6]
-  }],
-  "drawCallback": function (settings) {
-    $('.cekEselon').on('click', function () {
-      var id = $(this).attr('id');
-      var cek = $(this).is(":checked");
-
-      $.post("https://kinerjav2.pareparekota.go.id/admin/c_user/update_eselon", {
-        id: id,
-        cek: cek
-      }, function (res) {
-        alert(res);
-
-      });
-    });
-  }
-});
-
-
-//===================================================================================//
-//tampilkan semua
-
+//tampilkan semua user ditabel
 fetch("https://kinerjav2.pareparekota.go.id/c_atasan_2022/skp_bawahan")
   .then(res => {
     return res.text()
@@ -198,52 +117,51 @@ fetch("https://kinerjav2.pareparekota.go.id/c_atasan_2022/skp_bawahan")
     let hasil3 = hasil2.replace(270, 570 + ", paging : false")
     $("#tengah").html(hasil3)
     return hasil3
-  }).then(hasil2 ={
-      let arr2 = [] //tampung ID user
-    
-      $('#tableSKPBawahan a:odd').each((e, n) => {  
-        arr2[e] = (/\d+/).exec($(n).prop('onclick'))[0]
-        $(n).parent().append(arr2[e])
-      })   
-})
-  
-//============ isi perilaku target rencana kinerja ========
+  }).then(hasil2 => {
     let arr2 = [] //tampung ID user
-    setTimeout(() => {
-      $('#tableSKPBawahan a:odd').each((e, n) => {
-      
-        arr2[e] = (/\d+/).exec($(n).prop('onclick'))[0]
-        $(n).parent().append(arr2[e])
 
-        let formData = new FormData();
-
-        formData.append("id_opmt_tahunan_skp", arr[e]);
-        formData.append("id_perilaku", n);
-        formData.append("ekspektasi", "Sesuai ekspektasi Pimpinan");
-       
-        $.ajax({
-          url: "https://kinerjav2.pareparekota.go.id/c_atasan_2022/proses_update_ekspetasi",
-          type: "POST",
-          data: formData,
-          contentType: false,
-          cache: false,
-          processData: false,
-          success: function (data) {
-            var res = JSON.parse(data);
-            console.log(res.message)
-            if (res.code == 1) {
-              target_skp_bawahan(arr[e]);
-            }
-          },
-          error: function (err) {
-            console.log(err.toString());
-          }
-        });
-      }, 5000)
+    $('#tableSKPBawahan a:odd').each((e, n) => {
+      arr2[e] = (/\d+/).exec($(n).prop('onclick'))[0]
+      $(n).parent().append(arr2[e])
     })
-===================================================
+  })
+//==== END ====
 
-//====== isi 
+//============ isi perilaku target RENCANA kinerja ========
+
+let arr2 = [] //tampung ID user
+$('#tableSKPBawahan a:odd').each((e, n) => {
+    arr2[e] = (/\d+/).exec($(n).prop('onclick'))[0]
+    $(n).parent().append(arr2[e])
+
+    let formData = new FormData();
+
+    formData.append("id_opmt_tahunan_skp", arr2[e]);
+    formData.append("id_perilaku", e + 1);
+    formData.append("ekspektasi", "Sesuai ekspektasi Pimpinan");
+
+    $.ajax({
+      url: "https://kinerjav2.pareparekota.go.id/c_atasan_2022/proses_update_ekspetasi",
+      type: "POST",
+      data: formData,
+      contentType: false,
+      cache: false,
+      processData: false,
+      success: function (data) {
+        var res = JSON.parse(data);
+        console.log(res.message)
+        if (res.code == 1) {
+          target_skp_bawahan(arr2[e]);
+        }
+      },
+      error: function (err) {
+        console.log(err.toString());
+      }
+    });
+})
+//==== END ====
+
+//========== isi REALISASI kinerja =============
 $('#tableSKPBawahan a:odd').each((e, n) => {
   arr[e] = (/\d+/).exec($(n).prop('onclick'))[0]
   let formRealisasi = new FormData();
@@ -274,7 +192,7 @@ $('#tableSKPBawahan a:odd').each((e, n) => {
     }
   })
 })
-
+//==== END ====
 
 //===============================
 //--PERILAKU
