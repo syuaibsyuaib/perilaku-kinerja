@@ -113,8 +113,6 @@ fetch("https://kinerjav2.pareparekota.go.id/C_atasan_2022/dt_bawahan", {
 // Body = id_opmt_tahunan_skp: 16289, id_perilaku: 1, ekspektasi: Sesuai ekspektasi Pimpinan
 // =============================
 
-
-
 var table
 table = $('#tableSKPBawahan').DataTable({
   "searching": true,
@@ -200,21 +198,29 @@ fetch("https://kinerjav2.pareparekota.go.id/c_atasan_2022/skp_bawahan")
     let hasil3 = hasil2.replace(270, 570 + ", paging : false")
     $("#tengah").html(hasil3)
     return hasil3
-  })
+  }).then(hasil2 ={
+      let arr2 = [] //tampung ID user
+    
+      $('#tableSKPBawahan a:odd').each((e, n) => {  
+        arr2[e] = (/\d+/).exec($(n).prop('onclick'))[0]
+        $(n).parent().append(arr2[e])
+      })   
+})
   
+//============ isi perilaku target rencana kinerja ========
     let arr2 = [] //tampung ID user
     setTimeout(() => {
       $('#tableSKPBawahan a:odd').each((e, n) => {
-        console.log($('#tableSKPBawahan'))
+      
         arr2[e] = (/\d+/).exec($(n).prop('onclick'))[0]
-        console.log(arr2[e])
+        $(n).parent().append(arr2[e])
 
         let formData = new FormData();
 
         formData.append("id_opmt_tahunan_skp", arr[e]);
         formData.append("id_perilaku", n);
         formData.append("ekspektasi", "Sesuai ekspektasi Pimpinan");
-        console.log(arr[e])
+       
         $.ajax({
           url: "https://kinerjav2.pareparekota.go.id/c_atasan_2022/proses_update_ekspetasi",
           type: "POST",
@@ -235,15 +241,9 @@ fetch("https://kinerjav2.pareparekota.go.id/c_atasan_2022/skp_bawahan")
         });
       }, 5000)
     })
-  
+===================================================
 
-
-
-
-
-
-
-
+//====== isi 
 $('#tableSKPBawahan a:odd').each((e, n) => {
   arr[e] = (/\d+/).exec($(n).prop('onclick'))[0]
   let formRealisasi = new FormData();
