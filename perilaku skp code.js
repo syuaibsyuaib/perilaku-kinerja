@@ -38,7 +38,7 @@ function tampilkanSemua(thn) {
     const hello = $('#tableSKPBawahan a')[0]
     if (hello) {
       let arr2 = [] //tampung ID user
-      console.log(hello)
+      $(tableSKPBawahan_filter).remove()
       $('#tableSKPBawahan a:odd').each((e, n) => {
         arr2[e] = (/\d+/).exec($(n).prop('onclick'))[0]
         $(n).parent().append(arr2[e])
