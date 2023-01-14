@@ -154,6 +154,16 @@ $('#tableSKPBawahan a:odd').each((e, n) => {
 })
 //==== END ====
 
+//===== isi umpan balik kinerja =====
+let urlUmpanBalik = "https://kinerjav2.pareparekota.go.id/c_atasan_2022/proses_update_umpan_balik"
+
+let formUmpanBalik = new FormData();
+
+formUmpanBalik.append("id_opmt_kinerja_utama_detail", 5421)
+formUmpanBalik.append("umpan_balik", "")
+
+
+
 //===============================
 //--PERILAKU
 //--------------https://kinerjav2.pareparekota.go.id/c_atasan_2022/proses_input_penilaian
