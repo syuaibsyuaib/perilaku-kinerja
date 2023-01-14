@@ -19,39 +19,43 @@ fetch("https://kinerjav2.pareparekota.go.id/C_atasan_2022/dt_bawahan", {
 
 
 //tampilkan semua user ditabel
-fetch("https://kinerjav2.pareparekota.go.id/c_atasan_2022/skp_bawahan")
-  .then(res => {
-    return res.text()
-  })
-  .then(hasil => {
-    let hasil2 = hasil.replace("$('#tahun').val();", 2022 + ";d.length = 2000")
-    let hasil3 = hasil2.replace(270, 570 + ", paging : false")
-    $("#tengah").html(hasil3)
-    return hasil3
-  })
+tampilkanSemua(2022)
 
-
-const observer = new MutationObserver((mutations, obs) => {
-  const hello = $('#tableSKPBawahan a')[0]
-  if (hello) {
-    let arr2 = [] //tampung ID user
-    console.log(hello)
-    $('#tableSKPBawahan a:odd').each((e, n) => {
-      arr2[e] = (/\d+/).exec($(n).prop('onclick'))[0]
-      $(n).parent().append(arr2[e])
+function tampilkanSemua(thn) {
+  fetch("https://kinerjav2.pareparekota.go.id/c_atasan_2022/skp_bawahan")
+    .then(res => {
+      return res.text()
     })
-    obs.disconnect();
-    return;
-  }
-});
+    .then(hasil => {
+      let hasil2 = hasil.replace("$('#tahun').val();", thn + ";d.length = 2000")
+      let hasil3 = hasil2.replace(270, 570 + ", paging : false")
+      $("#tengah").html(hasil3)
+      return hasil3
+    })
 
-observer.observe(document, {
-  childList: true,
-  subtree: true
-});
+
+  const observer = new MutationObserver((mutations, obs) => {
+    const hello = $('#tableSKPBawahan a')[0]
+    if (hello) {
+      let arr2 = [] //tampung ID user
+      console.log(hello)
+      $('#tableSKPBawahan a:odd').each((e, n) => {
+        arr2[e] = (/\d+/).exec($(n).prop('onclick'))[0]
+        $(n).parent().append(arr2[e])
+      })
+      obs.disconnect();
+      return;
+    }
+  });
+
+  observer.observe(document, {
+    childList: true,
+    subtree: true
+  });
+}
 //==== END ====
 
-//============ isi perilaku target RENCANA kinerja ========
+//============ isi SEMUA perilaku target RENCANA kinerja ========
 
 let arr2 = [] //tampung ID user
 $('#tableSKPBawahan a:odd').each((e, n) => {
@@ -83,6 +87,38 @@ $('#tableSKPBawahan a:odd').each((e, n) => {
     }
   });
 })
+//==== END ====
+
+//========= isi perilaku target RENCANA kinerja =========
+function isiRencanaPerilaku(id, deskripsi) {
+  for (let i = 1; i < 8; i++) {
+    let formData = new FormData();
+
+    formData.append("id_opmt_tahunan_skp", id);
+    formData.append("id_perilaku", i);
+    formData.append("ekspektasi", deskripsi);
+
+    $.ajax({
+      url: "https://kinerjav2.pareparekota.go.id/c_atasan_2022/proses_update_ekspetasi",
+      type: "POST",
+      data: formData,
+      contentType: false,
+      cache: false,
+      processData: false,
+      success: function (data) {
+        var res = JSON.parse(data);
+        console.log(res.message)
+        if (res.code == 1) {
+          target_skp_bawahan(id);
+        }
+      },
+      error: function (err) {
+        console.log(err.toString());
+      }
+    });
+  }
+}
+
 //==== END ====
 
 //========== isi REALISASI kinerja =============
