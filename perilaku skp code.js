@@ -117,47 +117,60 @@ fetch("https://kinerjav2.pareparekota.go.id/c_atasan_2022/skp_bawahan")
     let hasil3 = hasil2.replace(270, 570 + ", paging : false")
     $("#tengah").html(hasil3)
     return hasil3
-  }).then(hasil2 => {
-    let arr2 = [] //tampung ID user
+  })
 
+
+const observer = new MutationObserver((mutations, obs) => {
+  const hello = $('#tableSKPBawahan a')[0]
+  if (hello) {
+    let arr2 = [] //tampung ID user
+    console.log(hello)
     $('#tableSKPBawahan a:odd').each((e, n) => {
       arr2[e] = (/\d+/).exec($(n).prop('onclick'))[0]
       $(n).parent().append(arr2[e])
     })
-  })
+    obs.disconnect();
+    return;
+  }
+});
+
+observer.observe(document, {
+  childList: true,
+  subtree: true
+});
 //==== END ====
 
 //============ isi perilaku target RENCANA kinerja ========
 
 let arr2 = [] //tampung ID user
 $('#tableSKPBawahan a:odd').each((e, n) => {
-    arr2[e] = (/\d+/).exec($(n).prop('onclick'))[0]
-    $(n).parent().append(arr2[e])
+  arr2[e] = (/\d+/).exec($(n).prop('onclick'))[0]
+  $(n).parent().append(arr2[e])
 
-    let formData = new FormData();
+  let formData = new FormData();
 
-    formData.append("id_opmt_tahunan_skp", arr2[e]);
-    formData.append("id_perilaku", e + 1);
-    formData.append("ekspektasi", "Sesuai ekspektasi Pimpinan");
+  formData.append("id_opmt_tahunan_skp", arr2[e]);
+  formData.append("id_perilaku", e + 1);
+  formData.append("ekspektasi", "Sesuai ekspektasi Pimpinan");
 
-    $.ajax({
-      url: "https://kinerjav2.pareparekota.go.id/c_atasan_2022/proses_update_ekspetasi",
-      type: "POST",
-      data: formData,
-      contentType: false,
-      cache: false,
-      processData: false,
-      success: function (data) {
-        var res = JSON.parse(data);
-        console.log(res.message)
-        if (res.code == 1) {
-          target_skp_bawahan(arr2[e]);
-        }
-      },
-      error: function (err) {
-        console.log(err.toString());
+  $.ajax({
+    url: "https://kinerjav2.pareparekota.go.id/c_atasan_2022/proses_update_ekspetasi",
+    type: "POST",
+    data: formData,
+    contentType: false,
+    cache: false,
+    processData: false,
+    success: function (data) {
+      var res = JSON.parse(data);
+      console.log(res.message)
+      if (res.code == 1) {
+        target_skp_bawahan(arr2[e]);
       }
-    });
+    },
+    error: function (err) {
+      console.log(err.toString());
+    }
+  });
 })
 //==== END ====
 
