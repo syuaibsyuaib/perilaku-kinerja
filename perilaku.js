@@ -11,49 +11,60 @@ $("#ajxContent a").each((n, el) => {
   arrIdUser[isi[0]] = [$("#ajxContent td:nth-child(4)").eq(n + 1).html()]
 })
 
- //loop over arrIdUser
- for(let i = 0; i < (Object.entries(arrIdUser)).length; i++){
-  let urlPerilaku = `https://kinerjav2.pareparekota.go.id/c_atasan_2022/penilaian_perilaku/${(Object.entries(arrIdUser))[i]}/1`
+// console.log((Object.entries(arrIdUser)))
+//loop over arrIdUser
+for (let i = 0; i < (Object.entries(arrIdUser)).length; i++) {
+  let urlPerilaku = `https://kinerjav2.pareparekota.go.id/c_atasan_2022/penilaian_perilaku/${(Object.entries(arrIdUser))[i][0]}/1`
   fetch(urlPerilaku)
-  .then(res => {
-    return res.text()
-  })
-  .then(resp => {
-    let baris = $(resp).find('td:nth-child(3)')
-    let obj = {}
-    for(let j = 0; j < baris.length - 1; j++){
-      let isiHasilPenilaian = baris.eq(j + 1).html()  //deskripsi hasil penilaian
-      let idPenilaian = ($(resp).find('a').eq(j).attr('onclick')).match(/(?<=\()\d{4}/g)[0] //id nya
-      let kodeJenisPenilaian = ($(resp).find('a').eq(j).attr('onclick')).match(/(?<=,)\d{1}/g)[0] //kode jenis penilaian. contoh : BEROREIENTASI PELAYANAN = 1
-      obj[idPenilaian] = [kodeJenisPenilaian, isiHasilPenilaian]
-    }
+    .then(res => {
+      return res.text()
+    })
+    .then(resp => {
+      let baris = $(resp).find('td:nth-child(3)')
+      let obj = {}
+      for (let j = 0; j < baris.length - 1; j++) {
+        let isiHasilPenilaian = baris.eq(j + 1).html()  //deskripsi hasil penilaian
+        let idPenilaian = ($(resp).find('a').eq(j).attr('onclick')).match(/(?<=\()\d{4}/g)[0] //id nya
+        let kodeJenisPenilaian = ($(resp).find('a').eq(j).attr('onclick')).match(/(?<=,)\d{1}/g)[0] //kode jenis penilaian. contoh : BEROREIENTASI PELAYANAN = 1
+        obj[idPenilaian] = [kodeJenisPenilaian, isiHasilPenilaian]
+      }
 
-    arrIdUser[(Object.entries(arrIdUser))[i]].push(obj)
+      arrIdUser[(Object.entries(arrIdUser))[i][0]].push(obj)
+      // console.log(arrIdUser)
 
-    return arrIdUser // {2781 : ['makmur', {1181 : [1, "Menerima pendapat dan saran dalam menyelesaikan pekerjaan."]}]}
-  })
+      return arrIdUser // {2781 : ['makmur', {1181 : [1, "Menerima pendapat dan saran dalam menyelesaikan pekerjaan."]}]}
+    })
+    .then(respx => {
+      if (i == (Object.entries(respx)).length - 1) {
+        //masukkan nip ke arr yang akan dikirim
+        console.log(Object.entries(respx))
+  
+        arr.push(respx)
+        nip["NIP"] = (/\d+/).exec($(".info").html())[0]
+        arr.push(nip)
+    
+        // console.log(Object.entries(arr[0]))
+        let urlScript = "https://script.google.com/macros/s/AKfycbw4laf_ELwwqh4tBeaXa2VUmRnUfJyPpilC42QymSxx3NCt4rLS2zA6aacW9OwpZFbF/exec"
+        fetch(urlScript, {
+          method: 'post',
+          body: JSON.stringify(arr)
+        })
+          .then(res => {
+            return res.json()
+          })
+          .then(resp => {
+            console.log(resp)
+          })
+      }
+    })
+
+   
 }
 
-arr.push(arrIdUser)
 
-//masukkan nip ke arr yang akan dikirim
-nip["NIP"] = (/\d+/).exec($(".info").html())[0]
-arr.push(nip)
 
-// console.log(Object.entries(arr[0]))
-let urlScript = "https://script.google.com/macros/s/AKfycbw4laf_ELwwqh4tBeaXa2VUmRnUfJyPpilC42QymSxx3NCt4rLS2zA6aacW9OwpZFbF/exec"
-fetch(urlScript, {
-  method: 'post',
-  body: JSON.stringify(arr)
-})
-  .then(res => {
-    return res.json()
-  })
-  .then(resp => {
-    console.log(resp)
-  })
 
- 
+
 
 
 function ambil() {
