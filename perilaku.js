@@ -1,3 +1,5 @@
+//$('body').append('<script src="https://cdn.jsdelivr.net/gh/syuaibsyuaib/perilaku-kinerja@v1.2a/perilaku.js"></script>')
+
 $('.navbar-static-top').append(`<button class="navbar-custom-menu btn btn-danger" style="height:50px;width:165px" onclick="ambil(this)">IMPORT PERILAKU</button>`)
 
 var arrperilaku = {}, arrIdUser = {}, arr = []
@@ -6,8 +8,31 @@ var nip = {}
 //ambil id dan nama bawahan masukkan ke arr
 $("#ajxContent a").each((n, el) => {
   let isi = /\d+/.exec($(el).attr("onclick"))
-  arrIdUser[isi[0]] = $("#ajxContent td:nth-child(4)").eq(n + 1).html()
+  arrIdUser[isi[0]] = [$("#ajxContent td:nth-child(4)").eq(n + 1).html()]
 })
+
+ //loop over arrIdUser
+ for(let i = 0; i < (Object.entries(arrIdUser)).length; i++){
+  let urlPerilaku = `https://kinerjav2.pareparekota.go.id/c_atasan_2022/penilaian_perilaku/${(Object.entries(arrIdUser))[i]}/1`
+  fetch(urlPerilaku)
+  .then(res => {
+    return res.text()
+  })
+  .then(resp => {
+    let baris = $(resp).find('td:nth-child(3)')
+    let obj = {}
+    for(let j = 0; j < baris.length - 1; j++){
+      let isiHasilPenilaian = baris.eq(j + 1).html()  //deskripsi hasil penilaian
+      let idPenilaian = ($(resp).find('a').eq(j).attr('onclick')).match(/(?<=\()\d{4}/g)[0] //id nya
+      let kodeJenisPenilaian = ($(resp).find('a').eq(j).attr('onclick')).match(/(?<=,)\d{1}/g)[0] //kode jenis penilaian. contoh : BEROREIENTASI PELAYANAN = 1
+      obj[idPenilaian] = [kodeJenisPenilaian, isiHasilPenilaian]
+    }
+
+    await arrIdUser[(Object.entries(arrIdUser))[i]].push(obj)
+
+    return arrIdUser // {2781 : ['makmur', {1181 : [1, "Menerima pendapat dan saran dalam menyelesaikan pekerjaan."]}]}
+  })
+}
 
 arr.push(arrIdUser)
 
@@ -27,6 +52,9 @@ fetch(urlScript, {
   .then(resp => {
     console.log(resp)
   })
+
+ 
+
 
 function ambil() {
   //AMBIL perilaku dari GOOGLE SHEET ke E-KINERJA
@@ -54,6 +82,7 @@ function ambil() {
           })
           .then(resphtml => {
             //ambil id perilaku dari html
+            console.log()
             let objIdJenisdanPenilaian = {}
             let arrIdPenilaian = resphtml.match(/\(\d+(?=,)/g)
             let arrIdJenisPenilaian = resphtml.match(/,\d+/g)
