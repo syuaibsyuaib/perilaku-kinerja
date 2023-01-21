@@ -1,4 +1,4 @@
-//$('body').append('<script src="https://cdn.jsdelivr.net/gh/syuaibsyuaib/perilaku-kinerja@v1.2a/perilaku.js"></script>')
+//$('body').append('<script src="https://cdn.jsdelivr.net/gh/syuaibsyuaib/perilaku-kinerja@v1.2c/perilaku.js"></script>')
 
 $('.navbar-static-top').append(`<button class="navbar-custom-menu btn btn-danger" style="height:50px;width:165px" onclick="ambil(this)">IMPORT PERILAKU</button>`)
 
