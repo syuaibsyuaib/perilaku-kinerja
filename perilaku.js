@@ -28,7 +28,7 @@ $("#ajxContent a").each((n, el) => {
       obj[idPenilaian] = [kodeJenisPenilaian, isiHasilPenilaian]
     }
 
-    await arrIdUser[(Object.entries(arrIdUser))[i]].push(obj)
+    arrIdUser[(Object.entries(arrIdUser))[i]].push(obj)
 
     return arrIdUser // {2781 : ['makmur', {1181 : [1, "Menerima pendapat dan saran dalam menyelesaikan pekerjaan."]}]}
   })
