@@ -1,6 +1,8 @@
-//$('body').append('<script src="https://cdn.jsdelivr.net/gh/syuaibsyuaib/perilaku-kinerja@v1.2d/perilaku.js"></script>')
+//$('body').append('<script src="https://cdn.jsdelivr.net/gh/syuaibsyuaib/perilaku-kinerja@v1.2e/perilaku.js"></script>')
 
 $('.navbar-static-top').append(`<button class="navbar-custom-menu btn btn-danger" style="height:50px;width:165px" onclick="ambil(this)">IMPORT PERILAKU</button>`)
+
+let urlScript = "https://script.google.com/macros/s/AKfycbw4laf_ELwwqh4tBeaXa2VUmRnUfJyPpilC42QymSxx3NCt4rLS2zA6aacW9OwpZFbF/exec"
 
 var arrperilaku = {}, arrIdUser = {}, arr = []
 var nip = {}
@@ -37,14 +39,14 @@ for (let i = 0; i < (Object.entries(arrIdUser)).length; i++) {
     .then(respx => {
       if (i == (Object.entries(respx)).length - 1) {
         //masukkan nip ke arr yang akan dikirim
-        console.log(Object.entries(respx))
-  
+        
         arr.push(respx)
         nip["NIP"] = (/\d+/).exec($(".info").html())[0]
         arr.push(nip)
-    
+        
+        console.log(arr)
         // console.log(Object.entries(arr[0]))
-        let urlScript = "https://script.google.com/macros/s/AKfycbw4laf_ELwwqh4tBeaXa2VUmRnUfJyPpilC42QymSxx3NCt4rLS2zA6aacW9OwpZFbF/exec"
+        
         fetch(urlScript, {
           method: 'post',
           body: JSON.stringify(arr)
